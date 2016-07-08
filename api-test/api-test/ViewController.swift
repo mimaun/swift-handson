@@ -47,7 +47,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func getPhotos() {
         
         let urlString = "https://api.photozou.jp/rest/search_public.json"
-        let keyword = "google"
+        let keyword = "neet"
         let limit = "20"
         
         let params = "keyword=\(keyword)&limit=\(limit)"
@@ -72,14 +72,26 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     print("error: \(error)")
                 }
                 
-                // 受け取ったデータから必要なデータを取り出し（title, image_url）
-                let tempPhotos = dict["info"]!["photo"] as! [NSDictionary]
-                for p in tempPhotos {
-                    let temp: Dictionary<String, String> = [
-                        "title" : p["photo_title"] as! String,
-                        "url" : p["image_url"] as! String,
-                        ]
-                    self.photos.append(temp)
+                if dict["info"]!["photo_num"] as! Int > 0 {
+                    // 受け取ったデータから必要なデータを取り出し（title, image_url）
+                    let tempPhotos = dict["info"]!["photo"] as! [NSDictionary]
+                    for p in tempPhotos {
+                        let temp: Dictionary<String, String> = [
+                            "title" : p["photo_title"] as! String,
+                            "url" : p["image_url"] as! String,
+                            ]
+                        self.photos.append(temp)
+                    }
+                } else {
+                    let alert = UIAlertController(title: "No Result", message: "検索したkeywordに該当する写真はありませんでした", preferredStyle: UIAlertControllerStyle.Alert)
+                    let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) in
+                        // インジケータが回っていたら止める.
+                        if self.progressIndicator.isAnimating() {
+                            self.progressIndicator.stopAnimating()
+                        }
+                    })
+                    alert.addAction(okAction)
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
             }
             
