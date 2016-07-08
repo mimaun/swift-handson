@@ -47,12 +47,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func getPhotos() {
         
         let urlString = "https://api.photozou.jp/rest/search_public.json"
-        let keyword = "neet"
+        let keyword = "あの花"
         let limit = "20"
         
         let params = "keyword=\(keyword)&limit=\(limit)"
         
-        let url = NSURL(string: "\(urlString)?\(params)")
+        let url = NSURL(string: "\(urlString)?\(params)".stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)
         
         /* 通信処理開始 */
         let config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
